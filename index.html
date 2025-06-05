@@ -58,14 +58,14 @@
         .svg-icon-hover:hover {
             transform: scale(1.1);
         }
-        /* Custom CSS for the SVG logo */
-        .logo-svg {
-            width: 120px; /* Match placeholder width */
-            height: 60px; /* Match placeholder height */
+        /* Custom CSS for the logo image */
+        .header-logo {
+            width: 120px; /* Adjust as needed */
+            height: auto; /* Maintain aspect ratio */
             margin: 0 auto;
             display: block; /* Ensures centering */
-            border-radius: 0.5rem; /* Match rounded-md */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Match shadow-md */
+            border-radius: 0.5rem; /* Matches rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Matches shadow-md */
         }
     </style>
 </head>
@@ -75,16 +75,8 @@
         <!-- Header Section -->
         <header class="w-full max-w-4xl text-center pt-8 pb-4 mb-8">
             <div class="mb-4">
-                <!-- Custom SVG Logo -->
-                <svg class="logo-svg" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="120" height="60" rx="8" fill="#FFFFFF"/>
-                    <!-- Main "I" shape -->
-                    <path d="M40 15 L40 45 L45 45 L45 15 L40 15 Z" fill="#2563eb"/>
-                    <!-- Stylized "C" with roof/arrow element -->
-                    <path d="M70 20 C70 15 65 10 60 10 C55 10 50 15 50 20 L50 25 L55 25 L55 20 C55 17.5 57.5 15 60 15 C62.5 15 65 17.5 65 20 L65 40 L50 40 L50 45 L70 45 L70 20 Z" fill="#1d4ed8"/>
-                    <!-- Small roof/building top -->
-                    <path d="M55 20 L60 15 L65 20 L55 20 Z" fill="#93c5fd"/>
-                </svg>
+                <!-- Image Logo -->
+                <img src="https://placehold.co/120x120/000000/FFFFFF?text=YOUR+LOGO+HERE" alt="Imperial Contracting Group Logo" class="header-logo">
             </div>
             <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 tracking-tight leading-tight rounded-lg">
                 Imperial Contracting Group
