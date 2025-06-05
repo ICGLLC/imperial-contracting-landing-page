@@ -7,7 +7,9 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -22,12 +24,13 @@
         }
         /* Style for the message box */
         #form-message {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
+            margin-top: 1.5rem; /* Increased margin */
+            padding: 1rem; /* Increased padding */
+            border-radius: 0.75rem; /* More rounded */
             text-align: center;
-            font-weight: 500;
+            font-weight: 600; /* Bolder font */
             display: none; /* Hidden by default */
+            box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px; /* Subtle shadow */
         }
         #form-message.success {
             background-color: #d1fae5; /* green-100 */
@@ -37,48 +40,70 @@
             background-color: #fee2e2; /* red-100 */
             color: #991b1b; /* red-700 */
         }
+        /* Custom button styling for gradient and shadow */
+        .btn-primary {
+            background-image: linear-gradient(to right, #2563eb, #1d4ed8); /* blue-600 to blue-800 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-image: linear-gradient(to right, #1d4ed8, #2563eb); /* Slightly shift gradient on hover */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        /* Hover effect for SVG icons */
+        .svg-icon-hover {
+            transition: transform 0.2s ease-in-out;
+        }
+        .svg-icon-hover:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="antialiased">
-    <div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="min-h-screen flex flex-col items-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
 
         <!-- Header Section -->
-        <header class="w-full max-w-4xl text-center mb-8">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 rounded-lg">
+        <header class="w-full max-w-4xl text-center pt-8 pb-4 mb-8">
+            <div class="mb-4">
+                <!-- Placeholder for Logo - Replace with your actual logo SVG or image -->
+                <img src="https://placehold.co/120x60/888/fff?text=Your+Logo" alt="Imperial Contracting Group Logo" class="mx-auto rounded-md shadow-md">
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 tracking-tight leading-tight rounded-lg">
                 Imperial Contracting Group
             </h1>
-            <p class="text-xl md:text-2xl text-slate-600 font-medium">
+            <p class="text-xl md:text-2xl text-slate-600 font-medium leading-relaxed tracking-wide">
                 Your Trusted Partner for Exceptional Home Renovations
             </p>
         </header>
 
         <!-- Main Content Area -->
-        <main class="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6 md:p-10 flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <main class="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6 md:p-10 mb-8 flex flex-col lg:flex-row gap-8 lg:gap-12">
 
             <!-- Company Overview / Value Proposition -->
             <section class="lg:w-1/2 flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-blue-700 mb-4 rounded-lg">
+                <h2 class="text-3xl font-bold text-blue-700 mb-4 tracking-tight rounded-lg">
                     Transforming Visions into Reality
                 </h2>
                 <p class="text-lg text-slate-700 mb-4 leading-relaxed">
                     At Imperial Contracting Group, we specialize in comprehensive <strong>full home renovations</strong> that breathe new life into your living spaces. With a commitment to quality and craftsmanship, we turn your dreams into beautifully realized homes.
                 </p>
-                <div class="space-y-3 mb-6">
+                <div class="space-y-4 mb-6"> <!-- Increased space-y -->
                     <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
+                        <svg class="h-6 w-6 text-blue-500 mr-3 flex-shrink-0 svg-icon-hover" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <p class="text-slate-700 text-lg leading-relaxed">
                             <strong>Licensed, Bonded, and Insured</strong> General Contractor in Virginia, Washington D.C., and Maryland.
                         </p>
                     </div>
                     <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
+                        <svg class="h-6 w-6 text-blue-500 mr-3 flex-shrink-0 svg-icon-hover" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <p class="text-slate-700 text-lg leading-relaxed">
                             Leveraging <strong>Architects and Engineers</strong> for superior design and structural integrity.
                         </p>
                     </div>
                     <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
+                        <svg class="h-6 w-6 text-blue-500 mr-3 flex-shrink-0 svg-icon-hover" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <p class="text-slate-700 text-lg leading-relaxed">
                             Owner with <strong>15 years of contracting experience</strong>, continuously licensed in VA DPOR as a Class A Residential Specialty contractor since June 10, 2022.
                         </p>
                     </div>
@@ -87,14 +112,14 @@
 
             <!-- Lead Capture Form -->
             <section class="lg:w-1/2 bg-blue-50 p-6 rounded-xl shadow-inner">
-                <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center rounded-lg">
+                <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center tracking-tight rounded-lg">
                     Ready to Start Your Renovation?
                 </h2>
-                <p class="text-slate-600 mb-6 text-center">
+                <p class="text-slate-600 mb-8 text-center leading-normal">
                     Tell us about your project, and we'll get in touch!
                 </p>
-                <!-- Form action updated to point to Cloudflare Worker endpoint -->
-                <form id="contactForm" class="space-y-4" action="/submit-form" method="POST">
+                <!-- Form action updated to point to Cloudflare Worker endpoint, novalidate added for custom client-side feedback -->
+                <form id="contactForm" class="space-y-4" action="/submit-form" method="POST" novalidate>
                     <div>
                         <label for="name" class="block text-sm font-medium text-slate-700">Your Name</label>
                         <input type="text" id="name" name="name" required class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out placeholder-slate-400" placeholder="John Doe">
@@ -119,7 +144,7 @@
                         <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" placeholder="Briefly describe your renovation goals, location, and timeline..."></textarea>
                     </div>
                     <div class="pt-2">
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white btn-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Get a Free Consultation
                         </button>
                     </div>
@@ -130,15 +155,16 @@
         </main>
 
         <!-- Footer Section -->
-        <footer class="w-full max-w-4xl text-center mt-8 p-4 bg-slate-100 rounded-2xl shadow-lg">
+        <footer class="w-full max-w-4xl text-center mt-8 p-6 bg-slate-100 rounded-2xl shadow-lg"> <!-- Increased padding -->
             <p class="text-slate-700 text-md mb-2">
                 Imperial Contracting Group
             </p>
             <p class="text-slate-700 text-md mb-1">
                 17 Clarion Drive, Fredericksburg, VA 22405
             </p>
-            <p class="text-slate-700 text-md mb-1">
-                Email: <a href="mailto:Connect@Imperial-Contracting-Group.com" class="text-blue-600 hover:underline">Connect@Imperial-Contracting-Group.com</a>
+            <p class="text-slate-700 text-md mb-1 flex items-center justify-center">
+                <i class="fas fa-envelope mr-2 text-blue-600"></i> <!-- Mail icon -->
+                Email: <a href="mailto:Connect@Imperial-Contracting-Group.com" class="text-blue-600 hover:underline ml-1">Connect@Imperial-Contracting-Group.com</a>
             </p>
             <p class="text-slate-500 text-sm mt-4">
                 &copy; 2025 Imperial Contracting Group LLC. All rights reserved.
