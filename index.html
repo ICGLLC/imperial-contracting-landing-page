@@ -1,193 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imperial Contracting Group - Your Renovation Partner</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Tailwind 'bg-slate-50' */
-            color: #334155; /* Tailwind 'text-slate-700' */
-        }
-        /* Custom styles for form focus */
-        input:focus, textarea:focus, select:focus {
-            outline: none !important;
-            border-color: #1d4ed8 !important; /* Blue-700 */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5) !important; /* Blue-500 with opacity */
-        }
-        /* Style for the message box */
-        #form-message {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            font-weight: 500;
-            display: none; /* Hidden by default */
-        }
-        #form-message.success {
-            background-color: #d1fae5; /* green-100 */
-            color: #065f46; /* green-700 */
-        }
-        #form-message.error {
-            background-color: #fee2e2; /* red-100 */
-            color: #991b1b; /* red-700 */
-        }
-    </style>
-</head>
-<body class="antialiased">
-    <div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+// Worker code for handling form submissions securely
+// This worker will receive POST requests, parse the form data,
+// and send an email using Mailchannels (Cloudflare's recommended email service).
 
-        <header class="w-full max-w-4xl text-center mb-8">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 rounded-lg">
-                Imperial Contracting Group
-            </h1>
-            <p class="text-xl md:text-2xl text-slate-600 font-medium">
-                Your Trusted Partner for Exceptional Home Renovations
-            </p>
-        </header>
+// Define the recipient email address for inquiries
+const RECIPIENT_EMAIL = "Connect@Imperial-Contracting-Group.com";
+const SENDER_EMAIL = "no-reply@imperial-contracting-group.com"; // Use a "no-reply" email on your domain
 
-        <main class="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6 md:p-10 flex flex-col lg:flex-row gap-8 lg:gap-12">
+addEventListener("fetch", event => {
+  event.respondWith(handleRequest(event.request));
+});
 
-            <section class="lg:w-1/2 flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-blue-700 mb-4 rounded-lg">
-                    Transforming Visions into Reality
-                </h2>
-                <p class="text-lg text-slate-700 mb-4 leading-relaxed">
-                    At Imperial Contracting Group, we specialize in comprehensive **full home renovations** that breathe new life into your living spaces. With a commitment to quality and craftsmanship, we turn your dreams into beautifully realized homes.
-                </p>
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
-                            **Licensed, Bonded, and Insured** General Contractor in Virginia, Washington D.C., and Maryland.
-                        </p>
-                    </div>
-                    <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
-                            Leveraging **Architects and Engineers** for superior design and structural integrity.
-                        </p>
-                    </div>
-                    <div class="flex items-start">
-                        <svg class="h-6 w-6 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <p class="text-slate-700 text-lg">
-                            Owner with **15 years of contracting experience**, continuously licensed in VA DPOR as a Class A Residential Specialty contractor since June 10, 2022.
-                        </p>
-                    </div>
-                </div>
-            </section>
+async function handleRequest(request) {
+  // Only allow POST requests to this endpoint
+  if (request.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 
-            <section class="lg:w-1/2 bg-blue-50 p-6 rounded-xl shadow-inner">
-                <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center rounded-lg">
-                    Ready to Start Your Renovation?
-                </h2>
-                <p class="text-slate-600 mb-6 text-center">
-                    Tell us about your project, and we'll get in touch!
-                </p>
-                <form id="contactForm" class="space-y-4" action="/submit-form" method="POST">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-slate-700">Your Name</label>
-                        <input type="text" id="name" name="name" required class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out placeholder-slate-400" placeholder="John Doe">
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-slate-700">Email Address</label>
-                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" placeholder="your.email@example.com">
-                    </div>
-                    <div>
-                        <label for="projectType" class="block text-sm font-medium text-slate-700">Type of Project</label>
-                        <select id="projectType" name="projectType" class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out">
-                            <option value="">Select an option</option>
-                            <option value="Full Home Renovation">Full Home Renovation</option>
-                            <option value="Kitchen Remodel">Kitchen Remodel</option>
-                            <option value="Bathroom Remodel">Bathroom Remodel</option>
-                            <option value="Addition/Expansion">Addition/Expansion</option>
-                            <option value="Other">Other (Please specify in message)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-slate-700">Project Details</label>
-                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" placeholder="Briefly describe your renovation goals, location, and timeline..."></textarea>
-                    </div>
-                    <div class="pt-2">
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                            Get a Free Consultation
-                        </button>
-                    </div>
-                </form>
-                <div id="form-message" class="hidden"></div>
-            </section>
+  // Ensure the request is coming from your domain (optional but recommended for security)
+  // You would replace 'imperial-contracting-group.com' with your actual domain
+  const origin = request.headers.get('Origin');
+  if (origin && !origin.includes('imperial-contracting-group.com') && !origin.includes('pages.dev')) {
+      return new Response(JSON.stringify({ error: "Forbidden - Invalid Origin" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" }
+      });
+  }
 
-        </main>
+  try {
+    // Parse the JSON body from the form submission
+    const formData = await request.json();
 
-        <footer class="w-full max-w-4xl text-center mt-8 p-4 bg-slate-100 rounded-2xl shadow-lg">
-            <p class="text-slate-700 text-md mb-2">
-                Imperial Contracting Group
-            </p>
-            <p class="text-slate-700 text-md mb-1">
-                17 Clarion Drive, Fredericksburg, VA 22405
-            </p>
-            <p class="text-slate-700 text-md mb-1">
-                Email: <a href="mailto:Connect@Imperial-Contracting-Group.com" class="text-blue-600 hover:underline">Connect@Imperial-Conting-Group.com</a>
-            </p>
-            <p class="text-slate-500 text-sm mt-4">
-                &copy; 2025 Imperial Contracting Group LLC. All rights reserved.
-            </p>
-        </footer>
+    // Extract form fields
+    const { name, email, projectType, message } = formData;
 
-    </div>
+    // Basic validation
+    if (!name || !email || !message) {
+      return new Response(JSON.stringify({ error: "Missing required fields (Name, Email, Message)" }), {
+        status: 400,
+        headers: { "Content-Type": "application-type: application/json" }
+      });
+    }
 
-    <script>
-        // JavaScript to handle form submission via Fetch API
-        const contactForm = document.getElementById('contactForm');
-        const formMessage = document.getElementById('form-message');
+    // Construct the email content
+    const emailSubject = `New Inquiry from ${name} via Website`;
+    const emailBody = `
+      Name: ${name}
+      Email: ${email}
+      Project Type: ${projectType || 'Not specified'}
+      Message:
+      ${message}
+    `;
 
-        contactForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default mailto: action
+    // Mailchannels API endpoint for sending emails
+    const mailchannelsUrl = "https://api.mailchannels.net/tx/v1/send";
 
-            const formData = new FormData(contactForm);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
+    // Prepare the email payload for Mailchannels API
+    const mailchannelsPayload = {
+      personalizations: [{ to: [{ email: RECIPIENT_EMAIL }] }],
+      from: { email: SENDER_EMAIL, name: "Imperial Contracting Inquiry" },
+      subject: emailSubject,
+      content: [{ type: "text/plain", value: emailBody }]
+    };
 
-            // Display loading message
-            formMessage.classList.remove('success', 'error');
-            formMessage.classList.add('bg-blue-100', 'text-blue-700');
-            formMessage.textContent = 'Submitting...';
-            formMessage.style.display = 'block';
+    // Send the email using Mailchannels API
+    const mailchannelsResponse = await fetch(mailchannelsUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(mailchannelsPayload),
+    });
 
-            try {
-                const response = await fetch('/submit-form', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json' // Indicate that we accept JSON response
-                    },
-                    body: JSON.stringify(formObject)
-                });
+    // Check Mailchannels response
+    if (mailchannelsResponse.ok) {
+      return new Response(JSON.stringify({ message: "Form submitted successfully!" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    } else {
+      const errorText = await mailchannelsResponse.text();
+      console.error("Mailchannels API Error:", errorText);
+      return new Response(JSON.stringify({ error: `Failed to send email: ${mailchannelsResponse.statusText}. Details: ${errorText}` }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
 
-                const result = await response.json(); // Always parse JSON response
-
-                if (response.ok) {
-                    formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'error');
-                    formMessage.classList.add('success');
-                    formMessage.textContent = result.message || 'Thank you for your inquiry! We will get back to you soon.';
-                    contactForm.reset(); // Clear the form
-                } else {
-                    formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'success');
-                    formMessage.classList.add('error');
-                    formMessage.textContent = result.error || 'There was an error submitting your form. Please try again.';
-                }
-            } catch (error) {
-                console.error('Submission error:', error);
-                formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'success');
-                formMessage.classList.add('error');
-                formMessage.textContent = 'Network error or unable to connect. Please check your internet connection.';
-            }
-        });
-    </script>
-</body>
-</html>
+  } catch (error) {
+    console.error("Worker error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
