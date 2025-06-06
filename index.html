@@ -9,7 +9,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -77,8 +77,8 @@
         <!-- Header Section -->
         <header class="w-full max-w-4xl text-center pt-8 pb-4 mb-8">
             <div class="mb-4">
-                <!-- Image Logo: Ensure ICG-logo.jpg is in the same directory or provide full path -->
-                <img src="ICG-logo.jpg" alt="Imperial Contracting Group Logo" class="header-logo">
+                <!-- Placeholder Logo - replace with your actual ICG-logo.jpg or a generated SVG -->
+                <img src="https://placehold.co/120x120/E0E7FF/4338CA?text=ICG+Logo" alt="Imperial Contracting Group Logo" class="header-logo">
             </div>
             <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 tracking-tight leading-tight rounded-lg">
                 Imperial Contracting Group
@@ -190,7 +190,7 @@
         const formMessage = document.getElementById('form-message');
 
         contactForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); // Prevent default mailto: action
 
             // Create a plain object from form data for JSON serialization
             const formData = new FormData(contactForm);
@@ -241,3 +241,140 @@
     </script>
 </body>
 </html>
+```
+
+---
+
+```javascript
+// Worker code for handling form submissions securely
+// This worker will receive POST requests, parse the form data,
+// and send an email using Mailchannels (Cloudflare's recommended email service).
+
+// Define the recipient email address for inquiries
+const RECIPIENT_EMAIL = "Connect@Imperial-Contracting-Group.com"; // Ensure this is your correct recipient email
+// Use a "no-reply" email on your domain. Make sure this email address exists and can send emails.
+const SENDER_EMAIL = "no-reply@imperial-contracting-group.com"; // Ensure this is a valid sender email for your domain
+
+addEventListener("fetch", event => {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  console.log("Worker received request.");
+  console.log("Request method:", request.method);
+  console.log("Request URL:", request.url);
+  console.log("Request Content-Type:", request.headers.get('Content-Type'));
+
+
+  // Only allow POST requests to this endpoint
+  if (request.method !== "POST") {
+    console.warn("Method Not Allowed:", request.method);
+    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  // Ensure the request is coming from your domain (optional but recommended for security)
+  // This helps prevent spam from other websites.
+  // Replace 'imperial-contracting-group.com' with your actual custom domain.
+  // The 'pages.dev' check allows submissions from your Cloudflare Pages preview URL.
+  const origin = request.headers.get('Origin');
+  console.log("Request Origin:", origin);
+  if (origin && !origin.includes('imperial-contracting-group.com') && !origin.includes('pages.dev')) {
+      console.warn("Forbidden - Invalid Origin:", origin);
+      return new Response(JSON.stringify({ error: "Forbidden - Invalid Origin" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" }
+      });
+  }
+
+  try {
+    // Parse the JSON body from the form submission
+    // The HTML form sends data as JSON now, so we parse it this way.
+    console.log("Attempting to parse request body as JSON...");
+    const formData = await request.json(); // This is a common point of failure if Content-Type is wrong or body is malformed
+    console.log("Successfully parsed JSON body.");
+    console.log("Received formData:", formData);
+
+    // Extract form fields safely
+    // Default to 'Not provided' if a field is missing from the form data
+    const name = formData.name || 'Not provided';
+    const email = formData.email || 'Not provided';
+    const projectType = formData.projectType || 'Not specified';
+    const message = formData.message || 'Not provided';
+
+    // Basic validation to ensure essential fields are present
+    if (name === 'Not provided' || email === 'Not provided' || message === 'Not provided') {
+      console.warn("Missing required fields. Name:", name, "Email:", email, "Message:", message);
+      return new Response(JSON.stringify({ error: "Missing required fields: Name, Email, or Message." }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    // Construct the email content that will be sent to RECIPIENT_EMAIL
+    const emailSubject = `New Inquiry from ${name} via Website`;
+    const emailBody = `
+      You have received a new inquiry from your Imperial Contracting Group website.
+
+      --- Inquiry Details ---
+      Name: ${name}
+      Email: ${email}
+      Project Type: ${projectType}
+      Message:
+      ${message}
+      -----------------------
+    `;
+
+    // Mailchannels API endpoint for sending emails.
+    // Cloudflare integrates directly with Mailchannels for Workers,
+    // so no API key is usually needed when sending from a verified Cloudflare domain.
+    const mailchannelsUrl = "https://api.mailchannels.net/tx/v1/send";
+
+    // Prepare the email payload for Mailchannels API
+    const mailchannelsPayload = {
+      personalizations: [{ to: [{ email: RECIPIENT_EMAIL }] }],
+      from: { email: SENDER_EMAIL, name: "Imperial Contracting Inquiry" }, // Sender name for the email
+      subject: emailSubject,
+      content: [{ type: "text/plain", value: emailBody }] // Email content as plain text
+    };
+
+    console.log("Sending email to Mailchannels API...");
+    const mailchannelsResponse = await fetch(mailchannelsUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(mailchannelsPayload),
+    });
+    console.log("Mailchannels API response status:", mailchannelsResponse.status);
+
+
+    // Check Mailchannels response to determine if email was sent successfully
+    if (mailchannelsResponse.ok) {
+      console.log("Email sent successfully via Mailchannels.");
+      // Return a success response to the client (the webpage)
+      return new Response(JSON.stringify({ message: "Form submitted successfully!" }), {
+        status: 200, // HTTP 200 OK
+        headers: { "Content-Type": "application/json" }
+      });
+    } else {
+      // Log Mailchannels error for debugging and return an error response to the client
+      const errorText = await mailchannelsResponse.text();
+      console.error("Mailchannels API Error:", mailchannelsResponse.status, errorText);
+      return new Response(JSON.stringify({ error: `Failed to send email. Please try again later. (Error: ${mailchannelsResponse.status})` }), {
+        status: 500, // HTTP 500 Internal Server Error
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+  } catch (error) {
+    // Catch any unexpected errors during Worker execution
+    console.error("Worker processing error (caught in outer try-catch):", error.message || error);
+    return new Response(JSON.stringify({ error: "An unexpected error occurred. Please try again." }), {
+      status: 500, // HTTP 500 Internal Server Error
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
