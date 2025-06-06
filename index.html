@@ -18,7 +18,7 @@
             background-color: #f8fafc; /* Tailwind 'bg-slate-50' */
             color: #334155; /* Tailwind 'text-slate-700' */
         }
-        /* Custom styles for form focus */
+        /* Custom styles for form focus to enhance Tailwind defaults */
         input:focus, textarea:focus, select:focus {
             outline: none !important;
             border-color: #1d4ed8 !important; /* Blue-700 */
@@ -77,7 +77,7 @@
         <!-- Header Section -->
         <header class="w-full max-w-4xl text-center pt-8 pb-4 mb-8">
             <div class="mb-4">
-                <!-- Image Logo -->
+                <!-- Image Logo: Ensure ICG-logo.jpg is in the same directory or provide full path -->
                 <img src="ICG-logo.jpg" alt="Imperial Contracting Group Logo" class="header-logo">
             </div>
             <h1 class="text-5xl md:text-6xl font-extrabold text-blue-800 mb-2 tracking-tight leading-tight rounded-lg">
@@ -129,7 +129,7 @@
                 <p class="text-slate-600 mb-8 text-center leading-normal">
                     Tell us about your project, and we'll get in touch!
                 </p>
-                <!-- Form action updated to point to Cloudflare Worker endpoint, novalidate added for custom client-side feedback -->
+                <!-- Form action points to Cloudflare Worker endpoint, novalidate for custom client-side feedback -->
                 <form id="contactForm" class="space-y-4" action="/submit-form" method="POST" novalidate>
                     <div>
                         <label for="name" class="block text-sm font-medium text-slate-700">Your Name</label>
@@ -175,7 +175,7 @@
             </p>
             <p class="text-slate-700 text-md mb-1 flex items-center justify-center">
                 <i class="fas fa-envelope mr-2 text-blue-600"></i> <!-- Mail icon -->
-                Email: <a href="mailto:Connect@Imperial-Contracting-Group.com" class="text-blue-600 hover:underline ml-1">Connect@Imperial-Contracting-Group.com</a>
+                Email: <a href="mailto:Connect@Imperial-Contracring-Group.com" class="text-blue-600 hover:underline ml-1">Connect@Imperial-Contracring-Group.com</a>
             </p>
             <p class="text-slate-500 text-sm mt-4">
                 &copy; 2025 Imperial Contracting Group LLC. All rights reserved.
@@ -190,13 +190,10 @@
         const formMessage = document.getElementById('form-message');
 
         contactForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default mailto: action
+            event.preventDefault(); // Prevent default form submission
 
+            // Create FormData object directly from the form
             const formData = new FormData(contactForm);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
 
             // Display loading message
             formMessage.classList.remove('success', 'error');
@@ -205,29 +202,36 @@
             formMessage.style.display = 'block';
 
             try {
+                // Send FormData directly to the Cloudflare Worker.
+                // fetch automatically sets the Content-Type header to multipart/form-data
+                // when the body is a FormData object.
                 const response = await fetch('/submit-form', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json' // Indicate that we accept JSON response
-                    },
-                    body: JSON.stringify(formObject)
+                    body: formData, // Send FormData object directly
+                    // Explicitly set mode: 'cors' for cross-origin requests, though
+                    // Cloudflare Pages often handles this automatically for /submit-form paths.
+                    mode: 'cors'
                 });
 
-                const result = await response.json(); // Always parse JSON response
+                // Cloudflare Worker is designed to return plain text for success/error messages.
+                // It does not return JSON. So, we'll read the response as text.
+                const responseText = await response.text(); 
 
                 if (response.ok) {
                     formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'error');
                     formMessage.classList.add('success');
-                    formMessage.textContent = result.message || 'Thank you for your inquiry! We will get back to you soon.';
+                    // The Worker is designed to return the success message directly as plain text.
+                    formMessage.textContent = responseText || 'Thank you for your inquiry! We will get back to you soon.';
                     contactForm.reset(); // Clear the form
                 } else {
                     formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'success');
                     formMessage.classList.add('error');
-                    formMessage.textContent = result.error || 'There was an error submitting your form. Please try again.';
+                    // The Worker is designed to return the error message directly as plain text.
+                    formMessage.textContent = responseText || 'There was an error submitting your form. Please try again.';
+                    console.error('Form submission failed with status:', response.status, 'Message:', responseText);
                 }
             } catch (error) {
-                console.error('Submission error:', error);
+                console.error('Network error or unexpected submission error:', error);
                 formMessage.classList.remove('bg-blue-100', 'text-blue-700', 'success');
                 formMessage.classList.add('error');
                 formMessage.textContent = 'Network error or unable to connect. Please check your internet connection.';
